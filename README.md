@@ -70,4 +70,4 @@ See [design standard](docs/design-standard.md), [case-study lessons](reference/l
 
 `browser-qa` captures route-wide evidence; project-specific flow tests remain required. `seal` hashes only allowlisted public files and records the reviewed contract fingerprint. `verify-public` compares those bytes on both deployment URLs. A release still requires a reviewer to inspect screenshots and the actual customer journeys.
 
-The kit never reads credentials, contacts prospects, mutates the shared sheet, creates cloud resources or deploys on its own. It produces reviewed evidence and write plans for an authorized operator to apply with the connected tools. Real project data is ignored by Git and is not part of this public repository.
+The kit never reads credentials, contacts prospects, mutates the shared sheet, creates cloud resources or deploys on its own. It produces reviewed evidence and write plans for an authorized operator to apply with the connected tools. Real project data is ignored by Git and is not part of this public repository. See [validation scope](docs/validation.md) and [the improvement loop](docs/improving-the-system.md).

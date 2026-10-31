@@ -1,0 +1,13 @@
+# Release checklist
+
+1. Confirm current user authority, exact business identity, preview project and account. Concept build, preview deployment, official launch, tracker mutation and outreach are distinct grants. Missing launch facts can remain in an explicitly authorized independent proposal; missing release evidence cannot.
+2. Pass gates through review. Ensure meaningful official core-page coverage when baseline is known, all-route mobile/desktop inspection, tested customer journeys, dated/qualified factual claims and no unresolved critical/high defects.
+3. Inspect public allowlist and run `seal`. Only public files go to dist. Research, packet JSON, source generators, QA screenshots, original unapproved media, CRM data and credentials stay private. Preserve existing logo/mascot requirements and recorded media-use decisions.
+4. Use current official Cloudflare documentation/tool schema when deploying; don't bake an old CLI/account/project into this kit. Reuse an existing correct preview project when refining. Record the provider's successful deployment ID and immutable URL. Do not change client DNS or official business sites for a proposal.
+5. Upload the sealed bytes without rebuilding. Write publication.json using the actual receipt. Run `verify-public` and hosted all-route `browser-qa`. Inspect hosted layouts and verify actual booking/embed fallback, deep links, media, headers and404. The tool detects byte mismatch and private-path HTML fallbacks; it does not prove a third-party provider accepted a real booking.
+6. If stable propagation is delayed, report pending and retry bounded checks. Never mark it ready from a successful upload alone. Never erase a prior preview from the tracker because of a transient check failure.
+7. Apply a minimal stable-ID tracker update if authorized. Verify cell values, hyperlinks, formulas/table ranges and protected human fields. Save before/after artifacts privately and deliver the preview plus factual limits.
+
+Official launch additionally requires owner approval of business facts, contact/integration ownership, photo permissions, privacy/real backend behavior, domain control and agreed pricing/page scope. Preserve business email DNS records. A draft's page count may exceed the standard sales package; confirm scope before making a price promise. Do not silently change the quote or attach the wrong pricing sheet.
+
+No deployed site can be claimed “better than the current site by far” from page count alone. The independent review must record concrete differences and any areas not accessible for comparison. A provider account flow retained through a direct link is not a newly rebuilt account system.

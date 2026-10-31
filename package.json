@@ -1,0 +1,16 @@
+{
+  "name": "proposal-icm",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Evidence-led context architecture and quality gates for business website proposals",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "icm": "node bin/icm.mjs",
+    "test": "node --test test/gates.test.mjs test/browser.test.mjs",
+    "check": "node scripts/check-repo.mjs",
+    "test:browser": "node --test test/browser.test.mjs"
+  },
+  "dependencies": { "ajv": "8.20.0" },
+  "devDependencies": { "playwright": "1.64.1" }
+}

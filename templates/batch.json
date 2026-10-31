@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "batchId": "replace-with-private-wave-id",
+  "instructionCommit": "REPLACE_WITH_ACTUAL_40_CHARACTER_GIT_COMMIT",
+  "rootAgent": "replace-with-root-agent-id",
+  "assignment": "Replace with the actual user-authorized batch scope and exclusions.",
+  "jobs": [
+    {
+      "projectId": "REPLACE-STABLE-ID",
+      "projectDir": "../private-proposals/REPLACE-STABLE-ID",
+      "scope": "first-site",
+      "worker": "replace-with-assigned-worker-id"
+    }
+  ]
+}
