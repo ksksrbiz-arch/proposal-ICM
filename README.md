@@ -18,7 +18,18 @@ There is no reusable homepage template, universal color palette, forced framewor
 
 ## Quick start
 
-Node 22+ is required. From a clone of this repo:
+Node 22+ is required. Install the versioned CLI from npm:
+
+```sh
+npm install --global proposal-icm@1.0.0
+proposal-icm --version
+proposal-icm root
+proposal-icm init ../private-proposals/CC-EXAMPLE
+```
+
+`root` prints the installed instruction directory. Give your agent that directory's `AGENTS.md` and `.icm/INDEX.md`; the npm command provides gates and evidence tools, not an autonomous website generator. Pin the package version in each assignment. For browser QA, install its matching Chromium with `npx --package=proposal-icm@1.0.0 playwright install chromium`, or set `PLAYWRIGHT_CHANNEL=chrome` to use installed Chrome. Installing the CLI does not install a browser or run lifecycle scripts.
+
+For architecture development, regression tests and lesson promotion, use a source clone:
 
 ```sh
 npm ci
@@ -37,6 +48,8 @@ node bin/icm.mjs advance ../private-proposals/CC-EXAMPLE research
 ```
 
 The gate checks that stage and its prerequisites; it returns nonzero on failure. `advance` writes a new state event only after the gate passes. `status` is observational and does not authorize any action. See [artifact contracts](docs/contracts.md) and [commands](docs/commands.md).
+
+Installed instructions are a read-only version snapshot. When promoting a proven lesson, set `ICM_MAINTAINER_REPO` to the official source clone; promotion still requires an actual reviewed commit and regression evidence. Read [package installation and releases](docs/package-release.md) for install verification and maintainer steps. No additional reuse license is granted by this initial distribution (`UNLICENSED`).
 
 ## The delivery path
 

@@ -26,6 +26,8 @@ Record the actual architecture commit in the private action. `adopt` requires di
 
 The public registry contains generic lessons, stages, regression paths and adoption status. Private projects contain actual business evidence/history. Root verifies the real commit and validation before calling a lesson shipped. If remote CI is unavailable, report that gap; never invent a passing run.
 
+When using the npm CLI, set `ICM_MAINTAINER_REPO` to a writable clone of `ksksrbiz-arch/proposal-ICM` before adoption or candidate export. The gate verifies the clone root, official origin, package identity and real promotion history. Do not edit installed node_modules. Normal private retrospectives and retained/held decisions work without a source clone. `lessons` always reads the installed version's pinned registry; promote source changes and publish a new version for the next batch, then upgrade deliberately. See [package releases](package-release.md).
+
 ## Bound the recursion
 
 One retrospective per project outcome, one root batch synthesis and normally one architecture promotion commit after a wave. Never spawn an endless improvement-agent chain or rewrite instructions under active workers. A failed experiment is held for the next authorized cycle. An explicit user stop wins; create a recovery retrospective on resume if needed.

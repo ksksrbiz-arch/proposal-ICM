@@ -10,4 +10,6 @@ reports/
 playwright-report/
 test-results/
 *.log
+*.tgz
+release-artifacts/
 !examples/**

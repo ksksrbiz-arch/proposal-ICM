@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import {mkdir,readdir,writeFile} from 'node:fs/promises';
+import {mkdir,readdir,writeFile,realpath} from 'node:fs/promises';
 import {resolve,basename} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {json,putJson,within} from '../lib/files.mjs';
@@ -9,8 +9,8 @@ import {retrospect,lessons,learningCandidate} from '../lib/learning.mjs';
 import {browserQa} from '../lib/browser-qa.mjs';
 import {seal,verifyPublic} from '../lib/release.mjs';
 const kit=fileURLToPath(new URL('../',import.meta.url));
-const help=`Proposal ICM\n\ninit <privateDir>\nstatus <privateDir>\nfingerprint <privateDir>\ngate <privateDir> <${STAGES.join('|')}>\nadvance <privateDir> <stage>\nbrowser-qa <privateDir> <baseUrl> <local|hosted>\nseal <privateDir>\nverify-public <privateDir> <stableUrl> <immutableUrl>\nbatch <manifest.json>\nlessons [stage]\nretrospect <privateDir> <completed|blocked|failed|interrupted>\nlearning-candidate <privateDir> <lesson-id>\n\nNo command deploys, changes a spreadsheet or sends outreach. See docs/commands.md.`;
-export async function run(args){const [command,dir,...rest]=args;if(!command||command==='help')return help;if(command==='lessons')return lessons(dir);if(!dir)throw Error('Missing project/manifest path');const root=resolve(dir);
+const help=`Proposal ICM\n\n--version\nroot\ninit <privateDir>\nstatus <privateDir>\nfingerprint <privateDir>\ngate <privateDir> <${STAGES.join('|')}>\nadvance <privateDir> <stage>\nbrowser-qa <privateDir> <baseUrl> <local|hosted>\nseal <privateDir>\nverify-public <privateDir> <stableUrl> <immutableUrl>\nbatch <manifest.json>\nlessons [stage]\nretrospect <privateDir> <completed|blocked|failed|interrupted>\nlearning-candidate <privateDir> <lesson-id>\n\nNo command deploys, changes a spreadsheet or sends outreach. See docs/commands.md.`;
+export async function run(args){const [command,dir,...rest]=args;if(!command||command==='help'||command==='--help'||command==='-h')return help;if(command==='--version'||command==='version'||command==='-v')return (await json(resolve(kit,'package.json'))).version;if(command==='root')return kit;if(command==='lessons')return lessons(dir);if(!dir)throw Error('Missing project/manifest path');const root=resolve(dir);
  if(command==='init'){
   if(within(kit,root)&&!within(resolve(kit,'work'),root))throw Error('Real projects must be outside the public kit or under ignored work/');
   try{if((await readdir(root)).length)throw Error('Refusing nonempty project folder');}catch(e){if(e.code!=='ENOENT')throw e;}
@@ -28,4 +28,6 @@ export async function run(args){const [command,dir,...rest]=args;if(!command||co
  if(command==='learning-candidate')return learningCandidate(root,rest[0],packet);
  throw Error('Unknown command; run help');
 }
-if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){try{const result=await run(process.argv.slice(2));console.log(typeof result==='string'?result:JSON.stringify(result,null,2));}catch(e){console.error('ICM BLOCKED: '+e.message);process.exitCode=1;}}
+// npm uses a symlink for POSIX bins. Resolve it before deciding whether this is the entry point.
+let entry=false;try{entry=!!process.argv[1]&&(await realpath(process.argv[1]))===(await realpath(fileURLToPath(import.meta.url)));}catch{}
+if(entry){try{const result=await run(process.argv.slice(2));console.log(typeof result==='string'?result:JSON.stringify(result,null,2));}catch(e){console.error('ICM BLOCKED: '+e.message);process.exitCode=1;}}

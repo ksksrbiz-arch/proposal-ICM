@@ -1,9 +1,11 @@
 # Commands
 
-Run from this repo after `npm ci`. Project arguments can be absolute paths or relative to the current directory. Outputs are written only inside the private project. Run `node bin/icm.mjs help` for usage. Install Chromium once with `npx playwright install chromium`; on a machine with Chrome, set `PLAYWRIGHT_CHANNEL=chrome` instead. Do not automate browser authentication or use a user's unrelated running server.
+Use the installed `proposal-icm` command, or run from the source clone with `node bin/icm.mjs` after `npm ci`. Project arguments can be absolute paths or relative to the current directory. Evidence outputs stay inside the private project; `learning-candidate` writes a sanitized memo to the explicit source clone. Run `proposal-icm help` for usage. For browser installation and package maintenance, see [package releases](package-release.md). On a machine with Chrome, set `PLAYWRIGHT_CHANNEL=chrome` instead. Do not automate browser authentication or use a user's unrelated running server.
 
 | Command | Purpose |
 | --- | --- |
+| `--version` | Print the installed package version. |
+| `root` | Print the instruction directory containing AGENTS.md and the context router. |
 | `init <dir>` | Create a new private packet set. Refuses an existing nonempty folder. No site/theme and no grants are created. |
 | `status <dir>` | Print identity, state pointer and current input fingerprint when build inputs are valid. |
 | `gate <dir> <stage>` | Validate schemas and cross-file evidence through that stage; fail nonzero on missing/invalid/stale evidence. |
@@ -17,7 +19,7 @@ Run from this repo after `npm ci`. Project arguments can be absolute paths or re
 | `lessons [stage]` | Load adopted generic lessons before the next assignment/stage. |
 | `retrospect <dir> <outcome>` | Create a private learning draft for completed, blocked, failed or interrupted work and archive the prior run. Agent analysis/review is still required. |
 | `gate <dir> learn` | Validate learning evidence/review independently of successful delivery. |
-| `learning-candidate <dir> <lesson-id>` | Export a reviewed generic memo after promotion; reject obvious prospect/contact data. Does not activate policy or publish to GitHub. |
+| `learning-candidate <dir> <lesson-id>` | Export a reviewed generic memo after promotion to the official source clone (`ICM_MAINTAINER_REPO` when installed from npm); reject obvious prospect/contact data. Does not activate policy or publish to GitHub. |
 
 Viewport matrix: 320×800, 390×844, 768×1024, 1024×768, 1440×1000, 844×390. The last case catches short landscape screens. Screenshots are full-page PNGs. A normal-motion and reduced-motion check must also be included in project-specific flow tests when animation exists; the generic scanner uses reduced motion to make stable, readable captures.
 

@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {resolve} from 'node:path';
-import {writeFile,readdir} from 'node:fs/promises';
+import {writeFile,readdir,mkdtemp,mkdir,readFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
 import {fixture} from './fixture.mjs';
 import {json,putJson,reference} from '../lib/files.mjs';
 import {retrospect,learningCandidate,lessons} from '../lib/learning.mjs';
@@ -16,3 +19,20 @@ test('adoption requires independently reviewed distinct evidence and promotion p
 test('candidate export rejects business contact data',async()=>{const {root,l}=await learned();Object.assign(l.actions[0],{decision:'adopt',privacyReviewed:true,promotionCommit:'a'.repeat(40),publicSummary:'Do not publish this fictional private contact fixture@example.test.'});await putJson(resolve(root,'learning.json'),l);await assert.rejects(learningCandidate(root,l.actions[0].id,packet),/contact, URL/);});
 test('a fabricated promotion SHA cannot pass as recursive improvement',async()=>{const {root,l}=await learned();Object.assign(l.actions[0],{decision:'adopt',privacyReviewed:true,promotionCommit:'f'.repeat(40)});await putJson(resolve(root,'learning.json'),l);await assert.rejects(validateGate(root,'learn'),/Promotion commit must exist/);});
 test('adopted lessons are routed by stage for the next run',async()=>{const all=await lessons(),design=await lessons('design');assert.ok(all.length>=5);assert.ok(design.length>=2);assert.ok(design.every(x=>x.stage==='design'&&x.status==='adopted'));});
+
+test('npm installations can verify promotions in an explicit source clone without writing into the package',async()=>{
+ const exec=promisify(execFile),maintainer=await mkdtemp(resolve(tmpdir(),'icm-maintainer-'));
+ await exec('git',['init'],{cwd:maintainer});await exec('git',['remote','add','origin','https://github.com/ksksrbiz-arch/proposal-ICM.git'],{cwd:maintainer});
+ await writeFile(resolve(maintainer,'package.json'),JSON.stringify({name:'proposal-icm'}));await mkdir(resolve(maintainer,'test'));await writeFile(resolve(maintainer,'test/gates.test.mjs'),'// Fictional promotion regression\n');
+ await exec('git',['add','.'],{cwd:maintainer});await exec('git',['-c','user.name=Fixture Reviewer','-c','user.email=fixture@example.test','commit','-m','Synthetic promotion proof'],{cwd:maintainer});
+ const sha=(await exec('git',['rev-parse','HEAD'],{cwd:maintainer})).stdout.trim(),{root,l}=await learned();
+ Object.assign(l.actions[0],{decision:'adopt',privacyReviewed:true,promotionCommit:sha});await putJson(resolve(root,'learning.json'),l);
+ const old=process.env.ICM_MAINTAINER_REPO;process.env.ICM_MAINTAINER_REPO=maintainer;
+ try{
+  assert.equal((await validateGate(root,'learn')).adopted,1);
+  const result=await learningCandidate(root,l.actions[0].id,packet);assert.ok(result.path.startsWith(maintainer));assert.match(await readFile(result.path,'utf8'),/Sanitized|Known core routes/);
+  await assert.rejects(learningCandidate(root,l.actions[0].id,packet),/EEXIST/);
+  await exec('git',['remote','set-url','origin','https://github.com/example/unrelated.git'],{cwd:maintainer});
+  await assert.rejects(validateGate(root,'learn'),/Proposal ICM source clone/);
+ }finally{if(old===undefined)delete process.env.ICM_MAINTAINER_REPO;else process.env.ICM_MAINTAINER_REPO=old;}
+});
