@@ -12,6 +12,7 @@ A repeatable operating system for distinctive local-business website proposals. 
 - Reviewed-build hashing, public-file allowlists and stable/immutable deployment verification.
 - Stable-ID tracker write plans that preserve outreach history and human corrections.
 - Batch isolation, pinned instructions, durable state and explicit handoffs so a fresh agent can continue.
+- Required [recursive learning](docs/learning.md): evidence-based retrospectives, tested lesson promotion and preloading adopted lessons into the next run.
 
 There is no reusable homepage template, universal color palette, forced framework or default animation package. Reuse tested infrastructure; author each site's experience.
 
@@ -21,6 +22,7 @@ Node 22+ is required. From a clone of this repo:
 
 ```sh
 npm ci
+npx playwright install chromium
 npm run check
 npm test
 node bin/icm.mjs init ../private-proposals/CC-EXAMPLE
@@ -47,10 +49,15 @@ flowchart LR
   Q --> V[Independent visual and journey review]
   V --> P[Authorized publication and byte verification]
   P --> T[Tracker readback and handoff]
+  T --> L[Retrospective and validated lesson promotion]
+  L --> N[Next authorized batch]
+  N --> B
   V -->|Defect with evidence| D
 ```
 
 The agent may iterate internally before returning a site. A score is a review aid, not proof of beauty. Public launch and outreach remain separate actions with separate authority.
+
+Every outcome, including a block/failure, gets a private learning packet and root review. The next batch loads adopted generic lessons. Proven changes are promoted after a wave; pinned instructions are not rewritten under running workers. See [the learning stage](stages/09-learn/CONTEXT.md).
 
 ## Use with batch agents
 

@@ -7,3 +7,5 @@ Read the pinned AGENTS.md, .icm/INDEX.md, private STATE.json/project.json and th
 First return research.json, assets.json, design.json, routes.json and flows.json with a real concept/contact sheet and meaningful page coverage for root review. Then implement only within your folder, run all-route QA and site-specific flow tests, inspect screenshots and repair issues. A distinctive useful site is the objective; no generic skeleton or cosmetic note tool filler.
 
 Do not edit shared manifests/sheets, send messages, change prices, alter DNS, create/deploy cloud projects or stop another server. Give root current fingerprints, evidence refs, exact public allowlist and a bounded HANDOFF.md. Independent root review and release remain required. Record owner launch inputs honestly; the preview is not official approval.
+
+Read relevant adopted lessons before starting. At every outcome, draft a private retrospective with actual findings, a causal hypothesis, before/after evidence and next-run checks for root review. Do not self-approve a global lesson or publish private evidence; root integrates validated generic improvements after the wave.

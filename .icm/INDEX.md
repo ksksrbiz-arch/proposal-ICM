@@ -12,5 +12,6 @@ Load in this order: `AGENTS.md` → this file → private `project.json` and `ST
 | Independent visual/journey review | [06 Review](../stages/06-review/CONTEXT.md) | Built site, screenshots, official comparison | review.json, sealed-build.json |
 | Deploy reviewed build | [07 Publish](../stages/07-publish/CONTEXT.md) | Review, seal, explicit publication authority | publication.json, hosted QA, public-verification.json |
 | Shared-sheet handoff | [08 Register](../stages/08-register/CONTEXT.md) | Live workbook and publication receipts | tracker.json, HANDOFF.md |
+| Every outcome / before next run | [09 Learn](../stages/09-learn/CONTEXT.md) | Actual QA, rework, review and failure evidence | learning.json, validated generic lessons/tests |
 
-Gate names are `brief`, `research`, `design`, `build`, `qa`, `review`, `publish`, `register`. A worker hands a bounded packet to the root; the root verifies it. [Ownership and concurrency](../docs/batch.md) and [state recovery](../docs/contracts.md) apply at every stage.
+Gate names are `brief`, `research`, `design`, `build`, `qa`, `review`, `publish`, `register`, `learn`. The learn gate is independent of release success, so failed/blocked projects can teach the next run without claiming delivery. A worker hands a bounded packet to root for verification. [Ownership and concurrency](../docs/batch.md) and [state recovery](../docs/contracts.md) apply throughout.

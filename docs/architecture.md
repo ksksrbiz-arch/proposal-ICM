@@ -24,6 +24,8 @@ Root assigns a pinned instruction version and one stable ID. The research stage 
 
 Defects return to their owning stage with route/viewport evidence. Changing an upstream input invalidates downstream evidence through the fingerprint. Old STATE.json completion events do not bypass gates. Reports are retained privately for recovery; a fresh agent reads the handoff and latest fingerprint instead of replaying the whole conversation.
 
+Every outcome closes with the recursive learning stage, independently of whether delivery succeeded. The agent records causal critique and before/after experiments; root adopts proven generic instructions/regressions, retains useful patterns or holds unproven hypotheses. Actual promotion commits and a public generic lesson registry feed the next pinned assignment. Private history is archived; instruction changes happen after the wave, with bounded recursion and independent/privacy review.
+
 ## Limits
 
 JSON schemas cannot prove a claim is true or a visual judgment honest. Hashes prove byte equality, not image licensing or good taste. Responsive Chromium is not a physical-device test. Independent review and explicit uncertainty are required because those limits cannot be made failproof by adding more booleans.

@@ -14,6 +14,10 @@ Run from this repo after `npm ci`. Project arguments can be absolute paths or re
 | `seal <dir>` | Require independent review gate, then hash the reviewed public allowlist. No upload or deployment. |
 | `verify-public <dir> <stableUrl> <immutableUrl>` | Check the seal, served byte hashes, marker, noindex headers/meta, real404 and private-file probes on both origins. Record public-verification.json; do not modify cloud state. |
 | `batch <manifest.json>` | Validate batch identities/folder isolation and flag duplicate design signatures among existing packets. No workers are spawned by the CLI. |
+| `lessons [stage]` | Load adopted generic lessons before the next assignment/stage. |
+| `retrospect <dir> <outcome>` | Create a private learning draft for completed, blocked, failed or interrupted work and archive the prior run. Agent analysis/review is still required. |
+| `gate <dir> learn` | Validate learning evidence/review independently of successful delivery. |
+| `learning-candidate <dir> <lesson-id>` | Export a reviewed generic memo after promotion; reject obvious prospect/contact data. Does not activate policy or publish to GitHub. |
 
 Viewport matrix: 320×800, 390×844, 768×1024, 1024×768, 1440×1000, 844×390. The last case catches short landscape screens. Screenshots are full-page PNGs. A normal-motion and reduced-motion check must also be included in project-specific flow tests when animation exists; the generic scanner uses reduced motion to make stable, readable captures.
 

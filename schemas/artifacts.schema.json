@@ -1255,6 +1255,285 @@
         "verifiedCells",
         "tableCoverageVerified"
       ]
+    },
+    "learning": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordedAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "architectureUsed": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "blocked",
+            "failed",
+            "interrupted"
+          ]
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "routeCases": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "flowPasses": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "openDefects": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "reviewScore": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 30
+            },
+            "reworkIterations": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          },
+          "required": [
+            "routeCases",
+            "flowPasses",
+            "openDefects",
+            "reviewScore",
+            "reworkIterations"
+          ]
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "stage": {
+                "type": "string",
+                "enum": [
+                  "brief",
+                  "research",
+                  "design",
+                  "build",
+                  "qa",
+                  "review",
+                  "publish",
+                  "register",
+                  "learn"
+                ]
+              },
+              "finding": {
+                "type": "string",
+                "minLength": 12
+              },
+              "evidence": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "stage",
+              "finding",
+              "evidence"
+            ]
+          },
+          "minItems": 1
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{2,79}$"
+              },
+              "stage": {
+                "type": "string",
+                "enum": [
+                  "brief",
+                  "research",
+                  "design",
+                  "build",
+                  "qa",
+                  "review",
+                  "publish",
+                  "register"
+                ]
+              },
+              "hypothesis": {
+                "type": "string",
+                "minLength": 12
+              },
+              "change": {
+                "type": "string",
+                "minLength": 12
+              },
+              "publicSummary": {
+                "type": "string",
+                "minLength": 12
+              },
+              "before": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ]
+              },
+              "after": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ]
+              },
+              "regressionFiles": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "adopt",
+                  "retain",
+                  "hold"
+                ]
+              },
+              "reviewedBy": {
+                "type": "string",
+                "minLength": 1
+              },
+              "privacyReviewed": {
+                "type": "boolean"
+              },
+              "promotionCommit": {
+                "type": "string",
+                "pattern": "^$|^[a-f0-9]{40}$"
+              }
+            },
+            "required": [
+              "id",
+              "stage",
+              "hypothesis",
+              "change",
+              "publicSummary",
+              "before",
+              "after",
+              "regressionFiles",
+              "decision",
+              "reviewedBy",
+              "privacyReviewed",
+              "promotionCommit"
+            ]
+          },
+          "minItems": 1
+        },
+        "nextRunChecklist": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 12
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "projectId",
+        "runId",
+        "recordedAt",
+        "architectureUsed",
+        "outcome",
+        "reviewer",
+        "metrics",
+        "observations",
+        "actions",
+        "nextRunChecklist"
+      ]
     }
   }
 }

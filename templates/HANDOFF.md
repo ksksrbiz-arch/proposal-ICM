@@ -25,3 +25,7 @@ Actual provider deployment ID, timestamp, build stamp, immutable/stable URLs, se
 ## Owner inputs and next action
 
 Current factual conflicts, content/media approval, permissions, domain/integration ownership, agreed page/price scope and official-launch inputs. Exact next step and owner. Outreach state must come from actual user/mail evidence, not publication.
+
+## Learning handoff
+
+Private learning.json run ID, actual measured outcome, causal finding, before/after experiment, independent review, adopted/retained/held result, architecture promotion commit when applicable and next-run checklist. Failed/blocked delivery remains failed/blocked even when its learning gate passes.

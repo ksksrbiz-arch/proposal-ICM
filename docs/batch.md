@@ -27,6 +27,7 @@ The packet supplies context, not undocumented assumptions. Do not give one worke
 4. Root independently opens every page on mobile/desktop and checks the primary journeys, official-site coverage and batch differentiation. Return precise defects to the owning worker. Do not rewrite every site centrally without teaching the owning stage what failed.
 5. Seal each approved build. Root publishes only if the user's grant covers publication, verifies stable/immutable artifacts and hosted QA, then updates the tracker with readback if authorized.
 6. Deliver a per-lead status matrix: researched, designed, built, review failed/passed, published verified, tracker verified, needs input. Include exact outstanding work. No “all done” from worker completion alone.
+7. Require a retrospective for each outcome and one root synthesis. Reproduce recurring defects, validate changes and promote generic lessons/tests after the wave. Record the new commit or retained/held hypotheses; preload adopted lessons next time. Do not rewrite active workers' pinned rules or start an unbounded self-improvement loop.
 
 ## Recovery
 

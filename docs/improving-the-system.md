@@ -1,5 +1,7 @@
 # Improve the architecture from real defects
 
+The mandatory execution contract is [the recursive learning stage](learning.md). This page explains how to scope its architecture changes.
+
 Keep the public kit stable during an active wave: workers pin a commit, and root records any deliberate migration. Do not edit gate rules underneath running workers. The project source and private evidence can evolve normally; changed build inputs invalidate downstream proof.
 
 When a batch reveals a recurring problem, preserve a private concrete example, identify its owning stage and write the smallest reusable correction. A deterministic failure becomes a negative regression test; a visual/copy issue becomes a specific review observation and design rejection test. Update a stage context only when that context would have prevented the failure. Do not add another generic checklist item merely to make the instructions longer.

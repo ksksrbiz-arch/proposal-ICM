@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "lessons": [
+    {"id":"known-blocked-core-pages","stage":"design","status":"adopted","rule":"Keep known core routes in the coverage baseline even when content is blocked; do not drop them from parity.","why":"A blocked response limits evidence, not the existence of a known route.","regressions":["test/gates.test.mjs"],"introduced":"1.0.0"},
+    {"id":"details-do-not-pad-parity","stage":"design","status":"adopted","rule":"Count substantial core pages separately from artwork details, utility pages and provider screens.","why":"A large route total can conceal missing customer journeys.","regressions":["test/gates.test.mjs"],"introduced":"1.0.0"},
+    {"id":"unknown-domain-is-not-absence","stage":"research","status":"adopted","rule":"An inaccessible domain is an unknown baseline, not proof a business has no company website.","why":"First-site eligibility must follow checked-source evidence.","regressions":["test/gates.test.mjs"],"introduced":"1.0.0"},
+    {"id":"private-html-fallback","stage":"publish","status":"adopted","rule":"Probe private and unknown URLs on both hosted origins; a homepage HTML200 fallback must fail release verification.","why":"Upload success and a homepage check do not prove public-file isolation.","regressions":["test/browser.test.mjs"],"introduced":"1.0.0"},
+    {"id":"separate-authority-from-build-hash","stage":"qa","status":"adopted","rule":"Check authority at its action gate while excluding permission-only records from the visual build fingerprint.","why":"A later user grant does not change reviewed bytes; source/output changes still invalidate evidence.","regressions":["test/gates.test.mjs"],"introduced":"1.0.0"}
+  ]
+}

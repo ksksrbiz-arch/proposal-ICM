@@ -18,6 +18,7 @@ All JSON packets carry `schemaVersion: 1`. Templates are structural starting poi
 | publication.json | Root | Actual provider identity/URLs/deployment receipt and hosted QA reference |
 | public-verification.json | Tool + root | Both hosted origins match the seal; noindex, custom404 and private-path probes |
 | tracker.json | Root | Private minimal write plan, before/after evidence, preservation checks and actual readback |
+| learning.json | Worker + independent root | Required retrospective, measured outcome, causal hypotheses, before/after experiments and adopted/retained/held lessons |
 | HANDOFF.md | Current owner | Concise next-agent entry point, proven state, limitations and next action |
 
 The JSON Schema bundle is `schemas/artifacts.schema.json`. The CLI validates the current artifact type, not a single generic “passed” field. Artifacts referenced as evidence use `{path, sha256}` relative to the private project; files must exist, be nonempty and match. Relative paths cannot escape the project, contain traversal, or resolve through symlinks. Served files must be inside outputDir and its exact allowlist.
@@ -25,6 +26,8 @@ The JSON Schema bundle is `schemas/artifacts.schema.json`. The CLI validates the
 `fingerprint` hashes the planning packets, implementation packet, source tree (excluding outputDir, node_modules and .git), flow-test files and all allowlisted output bytes. Project permission records are excluded because a later user grant does not change the reviewed site; current grants are still checked independently at each relevant gate. QA/review/seal are excluded to avoid circular hashes. Changes to build inputs invalidate old QA/review/release. Rebuilding produces a new marker/stamp; do not rebuild after sealing.
 
 `gate <dir> <stage>` checks that stage and all earlier stages. `advance` is a convenience that only changes STATE.json after those checks pass. Gate success means the specified evidence passed, not that an owner approved facts or that an agent actually performed an unobservable action. A root reviewer is accountable for screenshot inspection and authorization interpretation.
+
+Exception: `gate learn` validates learning without requiring publication/registration. Failed/blocked runs must still learn. `advance learn` records learning completion separately and does not turn a failed delivery into success. Prior retrospectives are archived privately; promotion needs actual evidence and independent/privacy review.
 
 For rollback/rework, edit the owning artifact or source and rerun the gate; STATE.json may point later but never overrides a failed gate. For unavailable tools, save a truthful pending handoff. Missing critical QA/review/publication/tracker proof must not be converted to success.
 
