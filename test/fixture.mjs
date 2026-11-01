@@ -24,13 +24,13 @@ export async function fixture(){
  await putJson(resolve(root,'site/dist/deployment.json'),{projectId:'TEST-001',buildStamp:'fixture-v1'});await writeFile(resolve(root,'site/dist/robots.txt'),'User-agent: *\nDisallow: /\n');await writeFile(resolve(root,'site/dist/_headers'),'/*\n  X-Robots-Tag: noindex, nofollow\n');
  return root;
 }
-export async function server(root,{leak=false}={}){
+export async function server(root,{leak=false,direct404Status=200}={}){
  const out=resolve(root,'site/dist');const s=http.createServer(async(req,res)=>{
   let path=new URL(req.url,'http://local').pathname;let status=200;
   let file=path==='/'?'index.html':path==='/services'?'services.html':path.slice(1);
   if(file==='_headers')file='not-real';
   if(file.includes('..')||!['index.html','services.html','404.html','deployment.json','robots.txt'].includes(file)){file=leak?'index.html':'404.html';status=leak?200:404;}
-  if(file==='404.html')status=404;
+  if(path==='/404.html')status=direct404Status;
   const bytes=await readFile(resolve(out,file));res.writeHead(status,{'content-type':file.endsWith('.html')?'text/html':file.endsWith('.json')?'application/json':'text/plain','x-robots-tag':'noindex, nofollow'}).end(bytes);
  });await new Promise(r=>s.listen(0,'127.0.0.1',r));return {base:`http://127.0.0.1:${s.address().port}/`,close:()=>new Promise(r=>s.close(r))};
 }

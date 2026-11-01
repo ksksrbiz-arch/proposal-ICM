@@ -1,5 +1,7 @@
 # Release checklist
 
+Verify the existing custom error-document asset separately from an unknown URL. Cloudflare Pages may serve a direct request for `404.html` with HTTP200 (or HTTP404 on another host); its bytes and noindex still must match the seal. Every missing/private-path probe must return HTTP404. A homepage HTML200 fallback remains a release blocker. See [Cloudflare serving behavior](https://developers.cloudflare.com/pages/configuration/serving-pages/). Never add artificial redirects simply to satisfy a verifier's mistaken assumption about the existing file.
+
 1. Confirm current user authority, exact business identity, preview project and account. Concept build, preview deployment, official launch, tracker mutation and outreach are distinct grants. Missing launch facts can remain in an explicitly authorized independent proposal; missing release evidence cannot.
 2. Pass gates through review. Ensure meaningful official core-page coverage when baseline is known, all-route mobile/desktop inspection, tested customer journeys, dated/qualified factual claims and no unresolved critical/high defects.
 3. Inspect public allowlist and run `seal`. Only public files go to dist. Research, packet JSON, source generators, QA screenshots, original unapproved media, CRM data and credentials stay private. Preserve existing logo/mascot requirements and recorded media-use decisions.
