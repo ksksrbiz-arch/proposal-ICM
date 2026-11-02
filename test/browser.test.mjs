@@ -19,6 +19,17 @@ test('real browser QA, independent review and byte verification reject regressio
  try{const page=await browser.newPage();await page.goto(s.base);assert.equal(await page.locator('#status').isVisible(),false);await page.getByRole('button',{name:'Show local status'}).click();assert.equal(await page.locator('#status').innerText(),'Fixture action complete');assert.equal(await page.locator('#status').isVisible(),true);}finally{await browser.close();}
  await writeFile(resolve(root,'evidence/flow-result.txt'),'Actual Playwright assertion: local button exposed the expected visible status.\n');
  const qa=await json(resolve(root,'qa.json'));qa.flows=[{id:'local-message',passed:true,evidence:await reference(root,'evidence/flow-result.txt')}];await putJson(resolve(root,'qa.json'),qa);await validateGate(root,'qa');
+ // A fresh hash binds the report bytes; it must not turn a recorded failure into a pass.
+ const originalFlow=qa.flows[0];
+ for(const report of [{passed:false},{errors:['Fixture service unavailable'],checks:[]},{failures:['Fixture action failed']},{checks:[{id:'fixture-action',passed:false}]},{results:[{id:'fixture-action',passed:false}]}]){
+  await putJson(resolve(root,'evidence/flow-report.json'),report);
+  qa.flows=[{id:'local-message',passed:true,evidence:await reference(root,'evidence/flow-report.json')}];await putJson(resolve(root,'qa.json'),qa);
+  await assert.rejects(validateGate(root,'qa'),/Failed flow report/);
+ }
+ await putJson(resolve(root,'evidence/flow-report.json'),{passed:true,errors:[],failures:[],checks:[{id:'fixture-action',passed:true}],results:[{passed:true}]});
+ qa.flows=[{id:'local-message',passed:true,evidence:await reference(root,'evidence/flow-report.json')}];await putJson(resolve(root,'qa.json'),qa);await validateGate(root,'qa');
+ await writeFile(resolve(root,'evidence/flow-report.json'),'{malformed');qa.flows[0].evidence=await reference(root,'evidence/flow-report.json');await putJson(resolve(root,'qa.json'),qa);await assert.rejects(validateGate(root,'qa'),SyntaxError);
+ qa.flows=[originalFlow];await putJson(resolve(root,'qa.json'),qa);await validateGate(root,'qa');
  const technical=await json(resolve(root,'evidence/technical-local.json')),review=await json(resolve(root,'review.json'));
  review.fingerprint=await fingerprint(root);review.reviewedBy='fixture-root';review.coverage=['/','/services'].map(path=>({path,mobile:technical.cases.find(c=>c.path===path&&c.width===390).screenshot,desktop:technical.cases.find(c=>c.path===path&&c.width===1440).screenshot,observation:'Synthetic test coverage only; these scores are fixtures, not a claim of real visual inspection.'}));review.scores={specificity:5,artDirection:5,copyContent:4,mobile:4,journeys:4,finishAccessibility:4};review.comparison='Synthetic fixture adds a distinct service route and retains its fictional telephone link.';review.observations='Automated fixture for review contract behavior; no real premium design is approved.';await putJson(resolve(root,'review.json'),review);await validateGate(root,'review');await seal(root);
  const oldFetch=globalThis.fetch;const stable='https://stable.example.test/',immutable='https://immutable.example.test/';

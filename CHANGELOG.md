@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+JSON flow evidence now rejects explicit failure results even when its hash matches and the outer QA record claims a pass. Fictional browser regressions cover aggregate failure, errors/failures arrays, failed checks/results, malformed JSON, passing JSON and existing text evidence. This does not replace independent journey review or impose a universal report schema.
+
 Public verification now accepts HTTP 200 or HTTP 404 for the existing top-level `404.html` asset while preserving sealed-byte and noindex checks. Missing/private URLs still require HTTP 404, and homepage HTTP 200 fallbacks remain rejected. Added both direct-asset status regressions and an adopted publish lesson, routed through the publish stage. The package version remains 1.0.0 pending a separate release decision.
 
 ## 1.0.0 — 2026-10-31
