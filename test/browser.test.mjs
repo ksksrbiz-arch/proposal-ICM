@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 import {writeFile,readFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {fixture,server} from './fixture.mjs';
-import {browserQa} from '../lib/browser-qa.mjs';
+import {browserQa,launchOptions} from '../lib/browser-qa.mjs';
 import {validateGate,fingerprint,VIEWPORTS} from '../lib/gates.mjs';
 import {seal,verifyPublic} from '../lib/release.mjs';
 import {json,putJson,reference} from '../lib/files.mjs';
@@ -15,7 +15,7 @@ test('real browser QA, independent review and byte verification reject regressio
  assert.equal((await fetch(new URL('/404.html',s.base))).status,200);
  assert.equal((await fetch(new URL('/missing-fixture-route',s.base))).status,404);
  const result=await browserQa(root,s.base,'local');assert.equal(result.cases,2*VIEWPORTS.length);
- const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHANNEL?{channel:process.env.PLAYWRIGHT_CHANNEL}:{})});
+ const browser=await chromium.launch({headless:true,...launchOptions()});
  try{const page=await browser.newPage();await page.goto(s.base);assert.equal(await page.locator('#status').isVisible(),false);await page.getByRole('button',{name:'Show local status'}).click();assert.equal(await page.locator('#status').innerText(),'Fixture action complete');assert.equal(await page.locator('#status').isVisible(),true);}finally{await browser.close();}
  await writeFile(resolve(root,'evidence/flow-result.txt'),'Actual Playwright assertion: local button exposed the expected visible status.\n');
  const qa=await json(resolve(root,'qa.json'));qa.flows=[{id:'local-message',passed:true,evidence:await reference(root,'evidence/flow-result.txt')}];await putJson(resolve(root,'qa.json'),qa);await validateGate(root,'qa');
@@ -41,7 +41,7 @@ test('real browser QA, independent review and byte verification reject regressio
   globalThis.fetch=(url,options)=>oldFetch(new URL(new URL(url).pathname,host.base),options);
   try{
    const r=await verifyPublic(root,stable,immutable);assert.equal(r.passed,true);
-   const verified=await json(resolve(root,'public-verification.json'));
+   const verified=await json(resolve(root,'public-verification.json'));assert.ok(Array.isArray(verified.warnings));
    const errorAssets=verified.checks.filter(c=>new URL(c.url).pathname==='/404.html');
    assert.equal(errorAssets.length,2);assert.ok(errorAssets.every(c=>c.status===directStatus));
    t.diagnostic(`Direct error asset HTTP${directStatus} accepted on both origins; missing/private URLs remain HTTP404.`);

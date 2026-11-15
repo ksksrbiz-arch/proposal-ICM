@@ -1,6 +1,6 @@
 # Root batch prompt
 
-Use proposal-ICM at commit `<instructionCommit>`. Read AGENTS.md and .icm/INDEX.md, then docs/batch.md. The user authorizes this batch: `<exact user instruction and selected stable lead IDs>`. Authority: `<build / preview publication / tracker updates / outreach, separately>`.
+Use proposal-ICM at commit `<instructionCommit>`. Read AGENTS.md and CLAUDE.md, then context/references/batch.md. The user authorizes this batch: `<exact user instruction and selected stable lead IDs>`. Authority: `<build / preview publication / tracker updates / outreach, separately>`.
 
 Read the live shared tracker and current workspace contract. Preserve paused leads, human notes, decisions, corrections, prices, history and permissions. Create a private batch manifest and exclusive project folders. Validate it with `icm batch`. Dispatch one worker per business within available concurrency, keeping a root slot. Each worker follows only its assigned stage/context and owns only its folder.
 
