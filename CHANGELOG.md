@@ -12,7 +12,7 @@
 
 **Research.** `context/references/tooling-and-skills.md` documents which existing tools and Claude skills fit each stage, which are bundled, which stay optional and why.
 
-**Compatibility notes.** The new claims gate can fail builds that contain a phone number, price or email without a matching `publicUse` research fact; add the sourced fact or remove the claim. New axe, keyboard and layout-shift checks can fail routes that passed under 1.0.0. The dependency `axe-core@4.14.0` is new. The README still shows the published 1.0.0 install command until 1.1.0 is released.
+**Compatibility notes.** The new claims gate can fail builds that contain a phone number, price or email without a matching `publicUse` research fact; add the sourced fact or remove the claim. New axe, keyboard and layout-shift checks can fail routes that passed under 1.0.0. The dependency `axe-core@4.14.0` is new.
 
 ## 1.0.x unreleased lessons
 

@@ -5,18 +5,18 @@
 Use Node 22 or later. Pin the package version instead of silently upgrading instructions during a batch:
 
 ```sh
-npm install --global proposal-icm@1.0.0
+npm install --global proposal-icm@1.1.0
 proposal-icm --version
 proposal-icm root
 proposal-icm help
 ```
 
-The root command locates the bundled AGENTS.md, context router, stage contracts, prompts, schemas and adopted generic lessons. Read those instructions before initializing a private project. All operational commands also work as `npx --yes --package=proposal-icm@1.0.0 proposal-icm <command>`.
+The root command locates the bundled AGENTS.md, context router, stage contracts, prompts, schemas and adopted generic lessons. Read those instructions before initializing a private project. All operational commands also work as `npx --yes --package=proposal-icm@1.1.0 proposal-icm <command>`.
 
 Browser binaries are installed explicitly, never during npm installation:
 
 ```sh
-npx --package=proposal-icm@1.0.0 playwright install chromium
+npx --package=proposal-icm@1.1.0 playwright install chromium
 ```
 
 On Linux, browser OS dependencies may also need `playwright install --with-deps chromium`. An existing Chrome installation can be selected with `PLAYWRIGHT_CHANNEL=chrome`. Keep the browser version compatible with the pinned Playwright dependency. Review browser setup in your environment; installation is not a screenshot review.
