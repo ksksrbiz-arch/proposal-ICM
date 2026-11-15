@@ -55,6 +55,12 @@ test('real browser QA, independent review and byte verification reject regressio
  await assert.rejects(validateGate(root,'register'));
  for(const name of ['write-plan','before','after'])await putJson(resolve(root,`evidence/${name}.json`),{fixture:true,purpose:name});
  const tracker=await json(resolve(root,'tracker.json'));Object.assign(tracker,{applied:true,writePlan:await reference(root,'evidence/write-plan.json'),before:await reference(root,'evidence/before.json'),after:await reference(root,'evidence/after.json'),preservationVerified:true,verifiedCells:['Synthetic fixture source register row'],tableCoverageVerified:true});await putJson(resolve(root,'tracker.json'),tracker);assert.equal((await validateGate(root,'register')).passed.at(-1),'register');
+ // Automatic learning: gate-class runs are logged, and finishing registration drafts a retrospective once.
+ const {run}=await import('../bin/icm.mjs');await run(['gate',root,'review']);
+ const adv=await run(['advance',root,'register']);assert.ok(adv.learning.runId);
+ const draft=await json(resolve(root,'learning.json'));assert.equal(draft.outcome,'completed');assert.ok(draft.observations.some(o=>o.id==='automatic-usage-capture'));
+ assert.equal((await run(['advance',root,'register'])).learning.runId,undefined);assert.equal((await json(resolve(root,'learning.json'))).runId,draft.runId);
+
  const leaky=await server(root,{leak:true});t.after(leaky.close);globalThis.fetch=(url,options)=>oldFetch(new URL(new URL(url).pathname,leaky.base),options);
  try{await assert.rejects(verifyPublic(root,stable,immutable),/publication checks failed/);}finally{globalThis.fetch=oldFetch;}
  review.reviewedBy='fixture-builder';await putJson(resolve(root,'review.json'),review);await assert.rejects(validateGate(root,'review'),/reviewer mismatch/);review.reviewedBy='fixture-root';await putJson(resolve(root,'review.json'),review);

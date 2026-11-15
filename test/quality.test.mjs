@@ -9,6 +9,10 @@ import {validateGate, collectGates, GateError, CODES, similarity} from '../lib/g
 import {lintPage, factCorpus} from '../lib/quality/static.mjs';
 import {browserQa, launchOptions} from '../lib/browser-qa.mjs';
 import {run} from '../bin/icm.mjs';
+import {retrospect} from '../lib/learning.mjs';
+import {readUsage, summarizeUsage, insights, USAGE_LOG} from '../lib/usage.mjs';
+import {evidence} from '../lib/files.mjs';
+import {fingerprint} from '../lib/gates.mjs';
 
 const corpus = factCorpus({facts: [
   {publicUse: true, statement: 'The workshop phone number is +1 202 555 0123 and email is hello@example.test.', qualification: ''},
@@ -109,4 +113,60 @@ test('browser QA blocks serious accessibility, keyboard and layout-shift defects
   const ok = report.cases.find(c => c.path === '/services' && c.width === 1440);
   assert.equal(ok.passed, true);
   assert.ok(ok.metrics && 'cls' in ok.metrics && 'pageBytes' in ok.metrics && ok.metrics.keyboard.unreachable === 0);
+});
+
+test('every gate-class run is logged automatically with codes only, never messages', async () => {
+  const root = await fixture(), r = await json(resolve(root, 'research.json'));
+  r.identity.matched = false; await putJson(resolve(root, 'research.json'), r);
+  await assert.rejects(run(['gate', root, 'research']), GateError);
+  await assert.rejects(run(['gate', root, 'research']), GateError);
+  const events = await readUsage(root);
+  assert.equal(events.length, 2);
+  assert.deepEqual(events[0].codes, ['research.identity-unresolved']);
+  assert.equal(events[0].ok, false);
+  assert.ok(!JSON.stringify(events).includes('Business identity unresolved'), 'messages must not be logged');
+  assert.deepEqual(summarizeUsage(events).codes[0], {code: 'research.identity-unresolved', stage: 'research', failures: 2});
+});
+
+test('retrospect turns the usage log into measured rework, observations and a stable evidence snapshot', async () => {
+  const root = await fixture(), r = await json(resolve(root, 'research.json'));
+  r.identity.matched = false; await putJson(resolve(root, 'research.json'), r);
+  for (let i = 0; i < 2; i++) await assert.rejects(run(['gate', root, 'research']), GateError);
+  await retrospect(root, 'blocked', fingerprint);
+  const l = await json(resolve(root, 'learning.json'));
+  assert.equal(l.metrics.reworkIterations, 2);
+  const o = l.observations.find(x => x.id === 'automatic-usage-capture');
+  assert.ok(o && /research\.identity-unresolved x2/.test(o.finding));
+  assert.ok(l.nextRunChecklist.some(x => x.includes('research.identity-unresolved')));
+  assert.equal(l.actions.length, 0, 'automatic learning never adopts or self-approves');
+  await assert.rejects(run(['gate', root, 'research']), GateError);          // log keeps growing
+  await evidence(root, o.evidence);                                           // snapshot hash stays valid
+  assert.ok((await readUsage(root)).length === 3 && USAGE_LOG);
+});
+
+test('insights pools codes across projects and flags uncovered recurrences as candidates only', async () => {
+  const a = await fixture(), b = await fixture();
+  for (const root of [a, b]) {
+    const r = await json(resolve(root, 'research.json')); r.facts[0].sourceIds = []; await putJson(resolve(root, 'research.json'), r);
+    await assert.rejects(run(['gate', root, 'research']), GateError);
+  }
+  const out = await run(['insights', a, b]);
+  const hit = out.recurring.find(x => x.code === 'research.fact-unsupported');
+  assert.equal(hit.projects, 2);
+  assert.equal(hit.candidate, true);
+  assert.deepEqual(hit.coveredByLessons, []);
+  assert.ok(!JSON.stringify(out).includes('Fictional'));
+  // A code covered by an adopted lesson is reported as covered, not as a new candidate.
+  const covered = await insights([a], [{id: 'x-lesson', codes: ['research.fact-unsupported']}]);
+  assert.equal(covered.recurring[0].candidate, false);
+});
+
+test('init preloads adopted lessons into the new project and status reports learning state', async () => {
+  const p = resolve(await (await import('node:fs/promises')).mkdtemp(resolve((await import('node:os')).tmpdir(), 'icm-learn-')), 'TEST-LEARN');
+  const out = await run(['init', p]);
+  assert.ok(out.lessonsPreloaded >= 5);
+  assert.equal((await json(resolve(p, 'lessons-loaded.json'))).lessons.length, out.lessonsPreloaded);
+  const st = await run(['status', p]);
+  assert.equal(st.learning.usageEvents, 0);
+  assert.match(st.learning.retrospective, /not started/);
 });

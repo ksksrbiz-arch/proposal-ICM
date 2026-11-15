@@ -2,6 +2,18 @@
 
 Every use feeds the next: **observe → critique → hypothesize → reproduce → improve → compare → independently review → adopt/retain/hold → preload next run**. This is a required stage with a validated artifact, not an optional paragraph.
 
+## Automatic capture (no agent discipline required)
+
+The loop starts without anyone remembering to start it:
+
+1. `init` snapshots the adopted lessons into `lessons-loaded.json`, so every new project begins with them in its folder.
+2. Every `gate`, `advance`, `browser-qa`, `seal` and `verify-public` run appends one line to `evidence/usage-log.jsonl`: command, stage, ok, blocking codes, duration. Codes only, never messages or business text. The log is local and private.
+3. `advance register` drafts `learning.json` automatically when none exists (it never overwrites an existing one). `retrospect` also works for blocked, failed or interrupted runs.
+4. The draft gets measured `reworkIterations`, an `automatic-usage-capture` observation (hashed snapshot of the log) and next-run checklist items for any code that blocked two or more runs.
+5. `insights <project> [<project> ...]` pools codes across projects and lists recurring codes that no adopted lesson covers (`candidate: true`). Lessons declare the codes they address in `LESSONS.json` (`codes`).
+
+What stays human: analysis, causes, the intervention, independent review, privacy review and promotion. Automation records and surfaces; it never adopts a lesson, edits instructions under running workers, or sends anything off the machine.
+
 ## Before work
 
 Read `.icm/learning/LESSONS.json` or run `icm lessons <stage>`. Root selects relevant generic lessons and the latest private retrospectives for the genre/workflow. Put those checks in worker assignments. Record the pinned architecture commit. Lessons do not authorize expanded scope or bypass current evidence.

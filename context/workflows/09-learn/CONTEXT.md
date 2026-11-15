@@ -18,7 +18,7 @@
 A completed, blocked, failed or interrupted run. An explicit user stop always takes precedence.
 
 ## Process
-1. `retrospect <project> <outcome>` creates the draft and archives the prior run. Metrics are a starting point, not proof the site is good.
+1. Capture is automatic: gate-class commands log to `evidence/usage-log.jsonl`, and `advance register` drafts `learning.json`. For blocked, failed or interrupted runs, run `retrospect <project> <outcome>` (it archives the prior run). Measured rework and blocking codes are a starting point, not proof the site is good. Run `insights` across projects to find recurring uncovered codes.
 2. Fill `learning.json`: evidence-bound observations, causal hypotheses, an intervention, before/after evidence, independent root review, next-run checks.
 3. For a defect: name the owning stage, predict how a changed rule/test prevents it, reproduce, make the smallest correction, compare on the same case, run the relevant regression plus the whole suite when tooling changes. For a success: retain the pattern with evidence. Hold unproven hypotheses with a concrete next experiment.
 4. After the wave, root promotes proven generic lessons into the owning workflow, a fictional regression fixture and `LESSONS.json`, in one reviewed commit when practical. Never mutate instructions under active workers; pin the new commit for the next batch.

@@ -3,7 +3,7 @@ import {resolve, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import Ajv from 'ajv';
 import {files, json, within} from '../lib/files.mjs';
-import {STAGES} from '../lib/gates.mjs';
+import {STAGES, CODES} from '../lib/gates.mjs';
 import {render} from './build-gate-docs.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -37,6 +37,7 @@ for (const lesson of registry.lessons) {
   if (lessonIds.has(lesson.id)) issues.push('Duplicate adopted lesson ID');
   lessonIds.add(lesson.id);
   if (!['adopted', 'candidate', 'held'].includes(lesson.status) || !lesson.rule || !lesson.why) issues.push('Incomplete learning registry entry');
+  for (const code of lesson.codes ?? []) if (!CODES[code]) issues.push(`Lesson ${lesson.id} references unknown gate code ${code}`);
   for (const path of lesson.regressions ?? []) try { await read(path); } catch { issues.push('Missing lesson regression ' + path); }
 }
 for (const path of ['AGENTS.md', 'CLAUDE.md', '.icm/INDEX.md', 'prompts/worker.md', 'prompts/reviewer.md', 'prompts/orchestrator.md']) if (!(await read(path)).trim()) issues.push(path + ': empty instructions');

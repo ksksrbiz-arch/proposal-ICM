@@ -9,6 +9,7 @@ import {retrospect, lessons, learningCandidate} from '../lib/learning.mjs';
 import {browserQa} from '../lib/browser-qa.mjs';
 import {seal, verifyPublic} from '../lib/release.mjs';
 import {doctor} from '../lib/doctor.mjs';
+import {recordUsage, readUsage, summarizeUsage, insights} from '../lib/usage.mjs';
 
 const kit = fileURLToPath(new URL('../', import.meta.url));
 const help = `Proposal ICM (Interpretable Context Methodology kit)
@@ -33,7 +34,9 @@ Batch and learning
   lessons [stage]
   retrospect <privateDir> <completed|blocked|failed|interrupted>
   learning-candidate <privateDir> <lesson-id>
+  insights <privateDir> [<privateDir> ...]   pool automatic usage logs across projects (codes and counts only)
 
+Every gate-class command also logs its outcome to <privateDir>/evidence/usage-log.jsonl (codes only, local) so the learning stage starts with measured data.
 --json prints machine-readable output (also for failures). Exit code 1 means blocked.
 No command deploys, changes a spreadsheet or sends outreach. See context/references/commands.md.`;
 
@@ -43,13 +46,32 @@ async function init(root) {
   await mkdir(root, {recursive: true});
   for (const [name, value] of Object.entries(templates(basename(root)))) await putJson(resolve(root, name), value);
   await writeFile(resolve(root, 'HANDOFF.md'), '# New proposal assignment\n\nFill the verified brief and authority before building. Read the pinned ICM AGENTS.md and current stage. No release evidence exists yet.\n');
-  return {project: root, stage: 'brief', authority: 'none; actual user instruction required'};
+  const adopted = await lessons();
+  await putJson(resolve(root, 'lessons-loaded.json'), {schemaVersion: 1, kitVersion: (await json(resolve(kit, 'package.json'))).version, loadedAt: new Date().toISOString(), lessons: adopted});
+  return {project: root, stage: 'brief', authority: 'none; actual user instruction required', lessonsPreloaded: adopted.length};
 }
 
 async function status(root) {
   const state = await json(resolve(root, 'STATE.json')), project = await json(resolve(root, 'project.json'));
   let fp; try { fp = await fingerprint(root); } catch { /* inputs incomplete */ }
-  return {projectId: project.projectId, state, fingerprint: fp ?? 'not built/inputs incomplete'};
+  const usage = summarizeUsage(await readUsage(root));
+  const learningDraft = await json(resolve(root, 'learning.json')).then(l => l.runId, () => null);
+  return {projectId: project.projectId, state, fingerprint: fp ?? 'not built/inputs incomplete', learning: {usageEvents: usage.events, blockedRuns: usage.rework, retrospective: learningDraft ?? 'not started: run retrospect, or advance register creates one'}};
+}
+
+const codesOf = (e, fallback) => e?.issues?.length ? [...new Set(e.issues.map(i => i.code))] : [fallback];
+/** Log the outcome of a gate-class command, then return or rethrow it unchanged. */
+async function logged(root, command, stage, fn, fallbackCode) {
+  const started = Date.now();
+  try {
+    const result = await fn();
+    const failed = result?.ok === false;
+    await recordUsage(root, {command, stage, ok: !failed, codes: failed ? [...new Set((result.stages ?? []).flatMap(s => s.issues.map(i => i.code)))] : [], ms: Date.now() - started, ...(result?.fingerprint ? {fingerprint: result.fingerprint} : {})});
+    return result;
+  } catch (e) {
+    await recordUsage(root, {command, stage, ok: false, codes: codesOf(e, fallbackCode), ms: Date.now() - started});
+    throw e;
+  }
 }
 
 async function gateOrAdvance(command, root, stage) {
@@ -65,6 +87,13 @@ async function gateOrAdvance(command, root, stage) {
     } else state.currentStage = STAGES[STAGES.indexOf(stage) + 1] ?? 'complete';
     state.events.push({at: new Date().toISOString(), completedThrough: stage, fingerprint: result.fingerprint ?? null});
     await putJson(resolve(root, 'STATE.json'), state);
+    // Every finished run learns: the first completed delivery creates a draft retrospective automatically.
+    // It never overwrites an existing learning.json (which may hold reviewed work) and never self-approves.
+    if (stage === 'register') {
+      const exists = await json(resolve(root, 'learning.json')).then(() => true, () => false);
+      if (!exists) result.learning = await retrospect(root, 'completed', fingerprint);
+      else result.learning = {status: 'learning.json already exists; run retrospect <outcome> to start a new cycle'};
+    }
   }
   return result;
 }
@@ -88,10 +117,11 @@ export async function run(args) {
     case 'batch': return validateBatch(root);
     case 'status': return status(root);
     case 'fingerprint': return fingerprint(root);
-    case 'gate': case 'advance': return gateOrAdvance(command, root, rest[0]);
-    case 'browser-qa': return browserQa(root, rest[0], rest[1]);
-    case 'seal': return seal(root);
-    case 'verify-public': return verifyPublic(root, rest[0], rest[1]);
+    case 'gate': case 'advance': return logged(root, command, rest[0], () => gateOrAdvance(command, root, rest[0]), 'gate.unreadable');
+    case 'browser-qa': return logged(root, command, 'qa', () => browserQa(root, rest[0], rest[1]), 'qa.technical');
+    case 'seal': return logged(root, command, 'review', () => seal(root), 'review.stale');
+    case 'verify-public': return logged(root, command, 'publish', () => verifyPublic(root, rest[0], rest[1]), 'publish.hosted');
+    case 'insights': return insights([root, ...rest.filter(a => !a.startsWith('-')).map(x => resolve(x))], await lessons());
     case 'retrospect': return retrospect(root, rest[0], fingerprint);
     case 'learning-candidate': return learningCandidate(root, rest[0], packet);
     default: throw Error('Unknown command; run help');

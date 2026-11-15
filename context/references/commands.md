@@ -19,6 +19,7 @@ Use the installed `proposal-icm` command, or run from the source clone with `nod
 | `seal <dir>` | Require independent review gate, then hash the reviewed public allowlist. No upload or deployment. |
 | `verify-public <dir> <stableUrl> <immutableUrl>` | Check the seal, served byte hashes, marker, noindex headers/meta, real404 and private-file probes on both origins. Record public-verification.json; do not modify cloud state. |
 | `batch <manifest.json>` | Validate batch identities/folder isolation and flag duplicate design signatures among existing packets. No workers are spawned by the CLI. |
+| `insights <dir> [<dir> ...]` | Pool the automatic usage logs of several projects (codes and counts only) and flag recurring codes no adopted lesson covers. Leads for review, never adopted rules. |
 | `lessons [stage]` | Load adopted generic lessons before the next assignment/stage. |
 | `retrospect <dir> <outcome>` | Create a private learning draft for completed, blocked, failed or interrupted work and archive the prior run. Agent analysis/review is still required. |
 | `gate <dir> learn` | Validate learning evidence/review independently of successful delivery. |
