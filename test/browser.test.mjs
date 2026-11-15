@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 import {writeFile,readFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {fixture,server} from './fixture.mjs';
-import {browserQa} from '../lib/browser-qa.mjs';
+import {browserQa,launchOptions} from '../lib/browser-qa.mjs';
 import {validateGate,fingerprint,VIEWPORTS} from '../lib/gates.mjs';
 import {seal,verifyPublic} from '../lib/release.mjs';
 import {json,putJson,reference} from '../lib/files.mjs';
@@ -15,7 +15,7 @@ test('real browser QA, independent review and byte verification reject regressio
  assert.equal((await fetch(new URL('/404.html',s.base))).status,200);
  assert.equal((await fetch(new URL('/missing-fixture-route',s.base))).status,404);
  const result=await browserQa(root,s.base,'local');assert.equal(result.cases,2*VIEWPORTS.length);
- const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHANNEL?{channel:process.env.PLAYWRIGHT_CHANNEL}:{})});
+ const browser=await chromium.launch({headless:true,...launchOptions()});
  try{const page=await browser.newPage();await page.goto(s.base);assert.equal(await page.locator('#status').isVisible(),false);await page.getByRole('button',{name:'Show local status'}).click();assert.equal(await page.locator('#status').innerText(),'Fixture action complete');assert.equal(await page.locator('#status').isVisible(),true);}finally{await browser.close();}
  await writeFile(resolve(root,'evidence/flow-result.txt'),'Actual Playwright assertion: local button exposed the expected visible status.\n');
  const qa=await json(resolve(root,'qa.json'));qa.flows=[{id:'local-message',passed:true,evidence:await reference(root,'evidence/flow-result.txt')}];await putJson(resolve(root,'qa.json'),qa);await validateGate(root,'qa');
@@ -41,7 +41,7 @@ test('real browser QA, independent review and byte verification reject regressio
   globalThis.fetch=(url,options)=>oldFetch(new URL(new URL(url).pathname,host.base),options);
   try{
    const r=await verifyPublic(root,stable,immutable);assert.equal(r.passed,true);
-   const verified=await json(resolve(root,'public-verification.json'));
+   const verified=await json(resolve(root,'public-verification.json'));assert.ok(Array.isArray(verified.warnings));
    const errorAssets=verified.checks.filter(c=>new URL(c.url).pathname==='/404.html');
    assert.equal(errorAssets.length,2);assert.ok(errorAssets.every(c=>c.status===directStatus));
    t.diagnostic(`Direct error asset HTTP${directStatus} accepted on both origins; missing/private URLs remain HTTP404.`);
@@ -55,6 +55,12 @@ test('real browser QA, independent review and byte verification reject regressio
  await assert.rejects(validateGate(root,'register'));
  for(const name of ['write-plan','before','after'])await putJson(resolve(root,`evidence/${name}.json`),{fixture:true,purpose:name});
  const tracker=await json(resolve(root,'tracker.json'));Object.assign(tracker,{applied:true,writePlan:await reference(root,'evidence/write-plan.json'),before:await reference(root,'evidence/before.json'),after:await reference(root,'evidence/after.json'),preservationVerified:true,verifiedCells:['Synthetic fixture source register row'],tableCoverageVerified:true});await putJson(resolve(root,'tracker.json'),tracker);assert.equal((await validateGate(root,'register')).passed.at(-1),'register');
+ // Automatic learning: gate-class runs are logged, and finishing registration drafts a retrospective once.
+ const {run}=await import('../bin/icm.mjs');await run(['gate',root,'review']);
+ const adv=await run(['advance',root,'register']);assert.ok(adv.learning.runId);
+ const draft=await json(resolve(root,'learning.json'));assert.equal(draft.outcome,'completed');assert.ok(draft.observations.some(o=>o.id==='automatic-usage-capture'));
+ assert.equal((await run(['advance',root,'register'])).learning.runId,undefined);assert.equal((await json(resolve(root,'learning.json'))).runId,draft.runId);
+
  const leaky=await server(root,{leak:true});t.after(leaky.close);globalThis.fetch=(url,options)=>oldFetch(new URL(new URL(url).pathname,leaky.base),options);
  try{await assert.rejects(verifyPublic(root,stable,immutable),/publication checks failed/);}finally{globalThis.fetch=oldFetch;}
  review.reviewedBy='fixture-builder';await putJson(resolve(root,'review.json'),review);await assert.rejects(validateGate(root,'review'),/reviewer mismatch/);review.reviewedBy='fixture-root';await putJson(resolve(root,'review.json'),review);

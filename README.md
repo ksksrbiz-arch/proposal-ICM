@@ -2,7 +2,7 @@
 
 A repeatable operating system for distinctive local-business website proposals. It turns research, art direction, implementation, visual review, publication and tracker handoff into bounded stages with evidence. It is designed to catch the failures that previously required repeated polish passes. No process can guarantee taste or a perfect first draft; this one fails closed when required evidence is missing.
 
-**Start with [AGENTS.md](AGENTS.md) and the [context router](.icm/INDEX.md).** Read [the architecture](docs/architecture.md) for its trust/context layers. For a batch, use [the orchestrator prompt](prompts/orchestrator.md). Do not ask workers to read the entire repo.
+**Start with [AGENTS.md](AGENTS.md) and the [context router](CLAUDE.md).** Read [the architecture](context/references/architecture.md) for its trust/context layers. For a batch, use [the orchestrator prompt](prompts/orchestrator.md). Do not ask workers to read the entire repo.
 
 ## What this system delivers
 
@@ -12,13 +12,14 @@ A repeatable operating system for distinctive local-business website proposals. 
 - Reviewed-build hashing, public-file allowlists and stable/immutable deployment verification.
 - Stable-ID tracker write plans that preserve outreach history and human corrections.
 - Batch isolation, pinned instructions, durable state and explicit handoffs so a fresh agent can continue.
-- Required [recursive learning](docs/learning.md): evidence-based retrospectives, tested lesson promotion and preloading adopted lessons into the next run.
+- Automated [quality gates](context/references/quality-gates.md): unsourced price/phone/email/rating/year claims, placeholder text, link and markup defects, axe-core WCAG A/AA, keyboard focus, layout shift and page weight, with stable codes (`proposal-icm explain <code>`) and `gate <project> all` to see every blocker at once.
+- Required [recursive learning](context/references/learning.md): evidence-based retrospectives, tested lesson promotion and preloading adopted lessons into the next run.
 
 There is no reusable homepage template, universal color palette, forced framework or default animation package. Reuse tested infrastructure; author each site's experience.
 
 ## Quick start
 
-Node 22+ is required. Install the versioned CLI from npm:
+Node 22+ is required. Run `proposal-icm doctor` to check the browser and dependencies; set `PLAYWRIGHT_EXECUTABLE_PATH` to use an existing Chromium. Install the versioned CLI from npm:
 
 ```sh
 npm install --global proposal-icm@1.0.0
@@ -27,7 +28,7 @@ proposal-icm root
 proposal-icm init ../private-proposals/CC-EXAMPLE
 ```
 
-`root` prints the installed instruction directory. Give your agent that directory's `AGENTS.md` and `.icm/INDEX.md`; the npm command provides gates and evidence tools, not an autonomous website generator. Pin the package version in each assignment. For browser QA, install its matching Chromium with `npx --package=proposal-icm@1.0.0 playwright install chromium`, or set `PLAYWRIGHT_CHANNEL=chrome` to use installed Chrome. Installing the CLI does not install a browser or run lifecycle scripts.
+`root` prints the installed instruction directory. Give your agent that directory's `AGENTS.md` and `CLAUDE.md`; the npm command provides gates and evidence tools, not an autonomous website generator. Pin the package version in each assignment. For browser QA, install its matching Chromium with `npx --package=proposal-icm@1.0.0 playwright install chromium`, or set `PLAYWRIGHT_CHANNEL=chrome` to use installed Chrome. Installing the CLI does not install a browser or run lifecycle scripts.
 
 For architecture development, regression tests and lesson promotion, use a source clone:
 
@@ -47,7 +48,7 @@ node bin/icm.mjs gate ../private-proposals/CC-EXAMPLE research
 node bin/icm.mjs advance ../private-proposals/CC-EXAMPLE research
 ```
 
-The gate checks that stage and its prerequisites; it returns nonzero on failure. `advance` writes a new state event only after the gate passes. `status` is observational and does not authorize any action. See [artifact contracts](docs/contracts.md) and [commands](docs/commands.md).
+The gate checks that stage and its prerequisites; it returns nonzero on failure. `advance` writes a new state event only after the gate passes. `status` is observational and does not authorize any action. See [artifact contracts](context/references/contracts.md) and [commands](context/references/commands.md).
 
 Installed instructions are a read-only version snapshot. When promoting a proven lesson, set `ICM_MAINTAINER_REPO` to the official source clone; promotion still requires an actual reviewed commit and regression evidence. Read [package installation and releases](docs/package-release.md) for install verification and maintainer steps. No additional reuse license is granted by this initial distribution (`UNLICENSED`).
 
@@ -70,7 +71,7 @@ flowchart LR
 
 The agent may iterate internally before returning a site. A score is a review aid, not proof of beauty. Public launch and outreach remain separate actions with separate authority.
 
-Every outcome, including a block/failure, gets a private learning packet and root review. The next batch loads adopted generic lessons. Proven changes are promoted after a wave; pinned instructions are not rewritten under running workers. See [the learning stage](stages/09-learn/CONTEXT.md).
+Every outcome, including a block/failure, gets a private learning packet and root review. The next batch loads adopted generic lessons. Proven changes are promoted after a wave; pinned instructions are not rewritten under running workers. See [the learning stage](context/workflows/09-learn/CONTEXT.md).
 
 ## Architecture at a glance
 
@@ -159,15 +160,15 @@ Component map:
 
 | Group | Component | Location |
 | --- | --- | --- |
-| Proposal workflow | Brief and scope | [`stages/01-brief`](stages/01-brief/CONTEXT.md) |
-| Proposal workflow | Identity research | [`stages/02-research`](stages/02-research/CONTEXT.md) |
-| Proposal workflow | Art direction and asset inventory | [`stages/03-design`](stages/03-design/CONTEXT.md) |
-| Proposal workflow | Site implementation | [`stages/04-build`](stages/04-build/CONTEXT.md) |
-| Quality and release | QA evidence | [`stages/05-qa`](stages/05-qa/CONTEXT.md) |
-| Quality and release | Independent review | [`stages/06-review`](stages/06-review/CONTEXT.md) |
-| Proposal workflow | Publication handoff | [`stages/07-publish`](stages/07-publish/CONTEXT.md) |
-| Proposal workflow | Tracker handoff | [`stages/08-register`](stages/08-register/CONTEXT.md) |
-| Learning loop | Learning stage | [`stages/09-learn`](stages/09-learn/CONTEXT.md) |
+| Proposal workflow | Brief and scope | [`context/workflows/01-brief`](context/workflows/01-brief/CONTEXT.md) |
+| Proposal workflow | Identity research | [`context/workflows/02-research`](context/workflows/02-research/CONTEXT.md) |
+| Proposal workflow | Art direction and asset inventory | [`context/workflows/03-design`](context/workflows/03-design/CONTEXT.md) |
+| Proposal workflow | Site implementation | [`context/workflows/04-build`](context/workflows/04-build/CONTEXT.md) |
+| Quality and release | QA evidence | [`context/workflows/05-qa`](context/workflows/05-qa/CONTEXT.md) |
+| Quality and release | Independent review | [`context/workflows/06-review`](context/workflows/06-review/CONTEXT.md) |
+| Proposal workflow | Publication handoff | [`context/workflows/07-publish`](context/workflows/07-publish/CONTEXT.md) |
+| Proposal workflow | Tracker handoff | [`context/workflows/08-register`](context/workflows/08-register/CONTEXT.md) |
+| Learning loop | Learning stage | [`context/workflows/09-learn`](context/workflows/09-learn/CONTEXT.md) |
 | Quality and release | Stage gates | [`lib/gates.mjs`](lib/gates.mjs) |
 | Quality and release | Browser QA | [`lib/browser-qa.mjs`](lib/browser-qa.mjs) |
 | Quality and release | Publish verification | [`lib/release.mjs`](lib/release.mjs) |
@@ -181,18 +182,18 @@ Component map:
 
 Follow [the first-run guide](docs/first-run.md) when starting the next wave. A structural batch manifest is in [templates/batch.json](templates/batch.json), and the private handoff outline is in [templates/HANDOFF.md](templates/HANDOFF.md).
 
-Give the root agent a private batch manifest matching `schemas/batch.schema.json`, the allowed lead IDs, the selected scope and the exact user authorization. The root reads the live tracker, assigns one business per worker, compares concepts across the wave, reviews every page, publishes approved bytes if authorized, and owns shared-sheet writes. Workers own only their assigned folders. See [batch protocol](docs/batch.md).
+Give the root agent a private batch manifest matching `schemas/batch.schema.json`, the allowed lead IDs, the selected scope and the exact user authorization. The root reads the live tracker, assigns one business per worker, compares concepts across the wave, reviews every page, publishes approved bytes if authorized, and owns shared-sheet writes. Workers own only their assigned folders. See [batch protocol](context/references/batch.md).
 
 Suggested invocation:
 
-> Use proposal-ICM at commit `<SHA>`. Build the following lead IDs from the shared tracker using a separate worker per business. Follow AGENTS.md and .icm/INDEX.md. Create private evidence packets, audit existing sites, exceed their useful core-page coverage, and pass independent mobile/desktop review. Publish to Cloudflare and update the tracker only if authorized below. Do not send outreach. Scope: `<lead IDs, first-site/redesign/refine, authority>`.
+> Use proposal-ICM at commit `<SHA>`. Build the following lead IDs from the shared tracker using a separate worker per business. Follow AGENTS.md and CLAUDE.md. Create private evidence packets, audit existing sites, exceed their useful core-page coverage, and pass independent mobile/desktop review. Publish to Cloudflare and update the tracker only if authorized below. Do not send outreach. Scope: `<lead IDs, first-site/redesign/refine, authority>`.
 
 ## Quality bar
 
-See [design standard](docs/design-standard.md), [case-study lessons](reference/lessons.md) and [release checklist](docs/release.md). Examples reference prior public proposals as study material, not current fact sources or promises that an owner approved them. Never reuse another company's identity or photos.
+See [design standard](context/references/design-standard.md), [case-study lessons](context/references/case-study-lessons.md) and [release checklist](context/references/release.md). Examples reference prior public proposals as study material, not current fact sources or promises that an owner approved them. Never reuse another company's identity or photos.
 
 ## Tooling boundaries
 
 `browser-qa` captures route-wide evidence; project-specific flow tests remain required. `seal` hashes only allowlisted public files and records the reviewed contract fingerprint. `verify-public` compares those bytes on both deployment URLs. A release still requires a reviewer to inspect screenshots and the actual customer journeys.
 
-The kit never reads credentials, contacts prospects, mutates the shared sheet, creates cloud resources or deploys on its own. It produces reviewed evidence and write plans for an authorized operator to apply with the connected tools. Real project data is ignored by Git and is not part of this public repository. See [validation scope](docs/validation.md) and [the improvement loop](docs/improving-the-system.md).
+The kit never reads credentials, contacts prospects, mutates the shared sheet, creates cloud resources or deploys on its own. It produces reviewed evidence and write plans for an authorized operator to apply with the connected tools. Real project data is ignored by Git and is not part of this public repository. See [validation scope](context/references/validation.md) and [the improvement loop](context/references/improving-the-system.md).

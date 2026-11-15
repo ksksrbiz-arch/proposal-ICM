@@ -1,0 +1,34 @@
+# Commands
+
+Use the installed `proposal-icm` command, or run from the source clone with `node bin/icm.mjs` after `npm ci`. Project arguments can be absolute paths or relative to the current directory. Evidence outputs stay inside the private project; `learning-candidate` writes a sanitized memo to the explicit source clone. Run `proposal-icm help` for usage. For browser installation and package maintenance, see [package releases](../../docs/package-release.md). On a machine with Chrome, set `PLAYWRIGHT_CHANNEL=chrome` instead, or point `PLAYWRIGHT_EXECUTABLE_PATH` at any Chromium binary (it wins over the channel). Run `doctor` to confirm the environment. Add `--json` to any command for machine-readable output, including failures. Do not automate browser authentication or use a user's unrelated running server.
+
+| Command | Purpose |
+| --- | --- |
+| `--version` | Print the installed package version. |
+| `doctor` | Check Node, a launchable browser, axe-core, lessons and optional git/maintainer settings. Read-only; names the fix for each failure. |
+| `explain <code>` | Print what a gate code means and how to repair it. The full list is in [gates](gates.md). |
+| `root` | Print the instruction directory containing AGENTS.md and the context router. |
+| `init <dir>` | Create a new private packet set. Refuses an existing nonempty folder. No site/theme and no grants are created. |
+| `status <dir>` | Print identity, state pointer and current input fingerprint when build inputs are valid. |
+| `gate <dir> <stage>` | Validate schemas and cross-file evidence through that stage; fail nonzero on missing/invalid/stale evidence. Prints every issue of the failing stage as `[code] message`. |
+| `gate <dir> all` | Report pass, fail or blocked for every release stage without stopping, plus build warnings. Exit 1 when not all pass. |
+| `advance <dir> <stage>` | Gate, then record completion/current next stage in STATE.json. |
+| `fingerprint <dir>` | Print the deterministic input/build fingerprint for actual test/review evidence. |
+| `browser-qa <dir> <baseUrl> local` | Scan every route at all six viewport cases, save hashed screenshots/report and update qa.json's technical reference. |
+| `browser-qa <dir> <stableUrl> hosted` | Same coverage against the hosted deployment; update publication.json's hostedQa reference. |
+| `seal <dir>` | Require independent review gate, then hash the reviewed public allowlist. No upload or deployment. |
+| `verify-public <dir> <stableUrl> <immutableUrl>` | Check the seal, served byte hashes, marker, noindex headers/meta, real404 and private-file probes on both origins. Record public-verification.json; do not modify cloud state. |
+| `batch <manifest.json>` | Validate batch identities/folder isolation and flag duplicate design signatures among existing packets. No workers are spawned by the CLI. |
+| `insights <dir> [<dir> ...]` | Pool the automatic usage logs of several projects (codes and counts only) and flag recurring codes no adopted lesson covers. Leads for review, never adopted rules. |
+| `lessons [stage]` | Load adopted generic lessons before the next assignment/stage. |
+| `retrospect <dir> <outcome>` | Create a private learning draft for completed, blocked, failed or interrupted work and archive the prior run. Agent analysis/review is still required. |
+| `gate <dir> learn` | Validate learning evidence/review independently of successful delivery. |
+| `learning-candidate <dir> <lesson-id>` | Export a reviewed generic memo after promotion to the official source clone (`ICM_MAINTAINER_REPO` when installed from npm); reject obvious prospect/contact data. Does not activate policy or publish to GitHub. |
+
+Viewport matrix: 320×800, 390×844, 768×1024, 1024×768, 1440×1000, 844×390. The last case catches short landscape screens. Screenshots are full-page PNGs. A normal-motion and reduced-motion check must also be included in project-specific flow tests when animation exists; the generic scanner uses reduced motion to make stable, readable captures.
+
+The scanner waits for fonts/images, collects JS errors and failed same-origin resources, checks HTTP status/H1/title/noindex/independent disclosure, duplicate IDs, broken images, document overflow and internal route/fragment destinations. It checks primary-action presence and reports potential small targets/body copy for reviewer attention. It also runs axe-core (WCAG A/AA), a keyboard-reachability and focus-visibility audit, layout-shift and page-weight budgets. See [quality gates](quality-gates.md). It does not certify accessibility, embed availability, native phone apps or conversion correctness.
+
+Use site-specific Playwright tests for keyboard focus, menus, tabs, galleries, query restoration, copy denial, downloads/reset, safe contact encoding and existing provider handoffs. Tests must not trigger real outbound messages, orders or reservations. Hash the actual output files with SHA-256 when writing qa.json flow evidence. The scanner records a report even when failures occur, then exits nonzero. Fix, rerun and inspect new screenshots.
+
+Local smoke server implementations should serve public output only, reject traversal/symlinks, use correct MIME types, preserve clean-route/deep-link behavior and return genuine404. The integration-test fixture provides a tiny test-only server; production projects still own their framework/server implementation.

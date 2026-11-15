@@ -30,7 +30,7 @@ assert.equal(await cli(['--version']),meta.version);
 assert.match(await cli(['--help']),/gate <privateDir>/);
 assert.equal(await realpath(await cli(['root'])),await realpath(installed));
 assert.ok(JSON.parse(await cli(['lessons','design'])).length>=2);
-await readFile(resolve(installed,'.icm/INDEX.md'));await readFile(resolve(installed,'stages/09-learn/CONTEXT.md'));
+await readFile(resolve(installed,'.icm/INDEX.md'));await readFile(resolve(installed,'CLAUDE.md'));await readFile(resolve(installed,'context/workflows/09-learn/CONTEXT.md'));await readFile(resolve(installed,'stages/09-learn/CONTEXT.md'));
 const project=resolve(consumer,'private proposal');
 assert.equal(JSON.parse(await cli(['init',project])).authority,'none; actual user instruction required');
 assert.equal(JSON.parse(await cli(['status',project])).state.currentStage,'brief');
