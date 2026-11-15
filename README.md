@@ -22,13 +22,13 @@ There is no reusable homepage template, universal color palette, forced framewor
 Node 22+ is required. Run `proposal-icm doctor` to check the browser and dependencies; set `PLAYWRIGHT_EXECUTABLE_PATH` to use an existing Chromium. Install the versioned CLI from npm:
 
 ```sh
-npm install --global proposal-icm@1.0.0
+npm install --global proposal-icm@1.1.0
 proposal-icm --version
 proposal-icm root
 proposal-icm init ../private-proposals/CC-EXAMPLE
 ```
 
-`root` prints the installed instruction directory. Give your agent that directory's `AGENTS.md` and `CLAUDE.md`; the npm command provides gates and evidence tools, not an autonomous website generator. Pin the package version in each assignment. For browser QA, install its matching Chromium with `npx --package=proposal-icm@1.0.0 playwright install chromium`, or set `PLAYWRIGHT_CHANNEL=chrome` to use installed Chrome. Installing the CLI does not install a browser or run lifecycle scripts.
+`root` prints the installed instruction directory. Give your agent that directory's `AGENTS.md` and `CLAUDE.md`; the npm command provides gates and evidence tools, not an autonomous website generator. Pin the package version in each assignment. For browser QA, install its matching Chromium with `npx --package=proposal-icm@1.1.0 playwright install chromium`, or set `PLAYWRIGHT_CHANNEL=chrome` (or `PLAYWRIGHT_EXECUTABLE_PATH`) to use an installed browser. Installing the CLI does not install a browser or run lifecycle scripts.
 
 For architecture development, regression tests and lesson promotion, use a source clone:
 
